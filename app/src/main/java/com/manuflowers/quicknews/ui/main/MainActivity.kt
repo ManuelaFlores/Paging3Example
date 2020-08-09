@@ -6,16 +6,17 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import com.manuflowers.quicknews.R
 import com.manuflowers.quicknews.data.networking.buildApiService
 import com.manuflowers.quicknews.data.repository.NewsRepository
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val repository = NewsRepository(buildApiService())
@@ -53,12 +54,20 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow
+                .distinctUntilChangedBy {
+                    it.refresh
+                }
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect{ mainRecyclerView.scrollToPosition(0) }
+        }
     }
 
     private fun sendNewRequest() {
         searchEditText.text.trim().let {
             if (it.isNotEmpty()) {
-                mainRecyclerView.scrollToPosition(0)
                 search(it.toString())
             }
         }
