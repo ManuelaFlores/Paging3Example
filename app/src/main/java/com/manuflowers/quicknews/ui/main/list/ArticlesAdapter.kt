@@ -1,4 +1,4 @@
-package com.manuflowers.quicknews.ui.main
+package com.manuflowers.quicknews.ui.main.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
