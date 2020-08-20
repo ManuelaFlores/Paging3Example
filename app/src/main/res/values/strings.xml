@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quick News</string>
+    <string name="app_name">Photo Inspiration</string>
     <string name="main_image_of_item">Main image of item</string>
     <string name="search_hint">Search News</string>
     <string name="retry">Retry</string>
